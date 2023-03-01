@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>新增页面</title>
+        <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">耗材名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">耗材编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="item_no" value="{$item_no}" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">单位</label>
+                        <div class="layui-input-block">
+                            <div name="unit_id" id="unit_id" required value="0" ></div>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">危险品</label>
+                        <div class="layui-input-block">
+                            <div name="danger" id="danger" value="0" ></div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        提交
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        重置
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/app/admin/component/layui/layui.js"></script>
+        <script src="/app/admin/component/pear/pear.js"></script>
+        <script src="/app/admin/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/app/admin/product/insert";
+            
+            // 字段 单位 unit_id
+            layui.use(["jquery", "xmSelect", "popup"], function() {
+                layui.$.ajax({
+                    url: "/app/admin/unit/select?format=select",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#unit_id").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        console.log(initValue)
+                        layui.xmSelect.render({
+                            el: "#unit_id",
+                            name: "unit_id",
+                            initValue: initValue,
+                            data: res.data, 
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true,
+                        });
+                        if (res.code) {
+                            layui.popup.failure(res.msg);
+                        }
+                    }
+                });
+            });
+            
+            // 字段 危险品 danger
+            layui.use(["jquery", "xmSelect"], function() {
+                let value = layui.$("#danger").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#danger",
+                    name: "danger",
+                    initValue: initValue,
+                    data: [{"value":"0","name":"否"},{"value":"1","name":"是"}],
+                    value: "0",
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                })
+            });
+            
+            //提交事件
+            layui.use(["form", "popup", "layer"], function () {
+                layui.form.on("submit(save)", function (data) {
+
+                    if (!data.field.unit_id) {
+                        layer.msg('单位必须选择');
+                        return false;
+                    }
+
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("操作成功", function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>
