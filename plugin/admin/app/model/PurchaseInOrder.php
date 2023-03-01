@@ -32,8 +32,36 @@ class PurchaseInOrder extends Base
      * @var string
      */
     protected $primaryKey = 'id';
-    
-    
+
+    /**
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::created(function ($purchaseInOrder) {
+            // 耗材库存记录
+            $productStock = ProductStock::query()
+                ->where('product_id', $purchaseInOrder->product_id)
+                ->first();
+
+            if ($productStock) {
+                // 存在库存记录
+                $productStock->increment('num', $purchaseInOrder->num);
+                return true;
+            }
+
+            // 耗材第一次入库
+            ProductStock::create([
+                'product_id' => $purchaseInOrder->product_id,
+                'num' => $purchaseInOrder->num,
+            ]);
+        });
+
+        static::updated(function ($purchaseInOrder) {
+
+        });
+    }
     
     
 }

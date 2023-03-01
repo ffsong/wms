@@ -4,18 +4,18 @@ namespace plugin\admin\app\controller;
 
 use support\Request;
 use support\Response;
-use plugin\admin\app\model\PurchaseInOrder;
+use plugin\admin\app\model\ProductStock;
 use plugin\admin\app\controller\Crud;
 use support\exception\BusinessException;
 
 /**
- * 耗材入库 
+ * 耗材库存 
  */
-class PurchaseInOrderController extends Crud
+class ProductStockController extends Crud
 {
     
     /**
-     * @var PurchaseInOrder
+     * @var ProductStock
      */
     protected $model = null;
 
@@ -25,7 +25,7 @@ class PurchaseInOrderController extends Crud
      */
     public function __construct()
     {
-        $this->model = new PurchaseInOrder;
+        $this->model = new ProductStock;
     }
     
     /**
@@ -34,7 +34,7 @@ class PurchaseInOrderController extends Crud
      */
     public function index(): Response
     {
-        return view('purchase-in-order/index');
+        return view('product-stock/index');
     }
 
     /**
@@ -48,7 +48,7 @@ class PurchaseInOrderController extends Crud
         if ($request->method() === 'POST') {
             return parent::insert($request);
         }
-        return view('purchase-in-order/insert', ['admin_id' => admin_id(), 'order_no' => 'RK' . date('YmdHis')]);
+        return view('product-stock/insert');
     }
 
     /**
@@ -62,7 +62,7 @@ class PurchaseInOrderController extends Crud
         if ($request->method() === 'POST') {
             return parent::update($request);
         }
-        return view('purchase-in-order/update');
+        return view('product-stock/update');
     }
 
 }

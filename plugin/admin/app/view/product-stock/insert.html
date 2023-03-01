@@ -14,42 +14,19 @@
                 <div class="main-container mr-5">
                     
                     <div class="layui-form-item">
-                        <label class="layui-form-label">入库单号</label>
+                        <label class="layui-form-label">产品ID</label>
                         <div class="layui-input-block">
-                            <input type="text" name="order_no" value="{$order_no}" disabled class="layui-input">
+                            <div name="product_id" id="product_id" value="0" ></div>
                         </div>
                     </div>
                     
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">耗材名称</label>
+                        <label class="layui-form-label">产品库存</label>
                         <div class="layui-input-block">
-                            <div name="product_id" id="product_id" required value="" ></div>
+                            <input type="number" name="num" value="0" class="layui-input">
                         </div>
                     </div>
                     
-                    <div class="layui-form-item">
-                        <label class="layui-form-label required">入库数量</label>
-                        <div class="layui-input-block">
-                            <input type="number" name="num" value="" required lay-verify="required" class="layui-input">
-                        </div>
-                    </div>
-                    
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">未使用数量</label>
-                        <div class="layui-input-block">
-                            <input type="number" name="unuse_num" value="0" disabled class="layui-input">
-                        </div>
-                    </div>
-                    
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">单价</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="price" value="0.00" class="layui-input">
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="admin_id" value="{$admin_id}">
-
                 </div>
             </div>
 
@@ -74,7 +51,7 @@
         <script>
 
             // 相关接口
-            const INSERT_API = "/app/admin/purchase-in-order/insert";
+            const INSERT_API = "/app/admin/product-stock/insert";
             
             // 字段 产品ID product_id
             layui.use(["jquery", "xmSelect", "popup"], function() {
@@ -89,6 +66,7 @@
                             name: "product_id",
                             initValue: initValue,
                             data: res.data, 
+                            value: "0",
                             model: {"icon":"hidden","label":{"type":"text"}},
                             clickClose: true,
                             radio: true,
@@ -103,12 +81,6 @@
             //提交事件
             layui.use(["form", "popup"], function () {
                 layui.form.on("submit(save)", function (data) {
-
-                    if (!data.field.product_id) {
-                        layer.msg('单位必须选择');
-                        return false;
-                    }
-
                     layui.$.ajax({
                         url: INSERT_API,
                         type: "POST",

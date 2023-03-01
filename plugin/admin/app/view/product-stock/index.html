@@ -15,16 +15,9 @@
                 <form class="layui-form top-search-from">
                     
                     <div class="layui-form-item">
-                        <label class="layui-form-label">入库单号</label>
+                        <label class="layui-form-label">产品ID</label>
                         <div class="layui-input-block">
-                            <input type="text" name="order_no" value="" disabled class="layui-input">
-                        </div>
-                    </div>
-                    
-                    <div class="layui-form-item">
-                        <label class="layui-form-label required">产品ID</label>
-                        <div class="layui-input-block">
-                            <div name="product_id" id="product_id"  required value="" ></div>
+                            <div name="product_id" id="product_id" value="" ></div>
                         </div>
                     </div>
                     
@@ -54,18 +47,18 @@
 
         <!-- 表格顶部工具栏 -->
         <script type="text/html" id="table-toolbar">
-            <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.purchaseinorder.insert">
+            <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.productstock.insert">
                 <i class="layui-icon layui-icon-add-1"></i>新增
             </button>
-            <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.purchaseinorder.delete">
+            <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.productstock.delete">
                 <i class="layui-icon layui-icon-delete"></i>删除
             </button>
         </script>
 
         <!-- 表格行工具栏 -->
         <script type="text/html" id="table-bar">
-            <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.purchaseinorder.update">编辑</button>
-            <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.purchaseinorder.delete">删除</button>
+            <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.productstock.update">编辑</button>
+            <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.productstock.delete">删除</button>
         </script>
 
         <script src="/app/admin/component/layui/layui.js"></script>
@@ -77,11 +70,11 @@
 
             // 相关常量
             const PRIMARY_KEY = "id";
-            const SELECT_API = "/app/admin/purchase-in-order/select";
-            const UPDATE_API = "/app/admin/purchase-in-order/update";
-            const DELETE_API = "/app/admin/purchase-in-order/delete";
-            const INSERT_URL = "/app/admin/purchase-in-order/insert";
-            const UPDATE_URL = "/app/admin/purchase-in-order/update";
+            const SELECT_API = "/app/admin/product-stock/select";
+            const UPDATE_API = "/app/admin/product-stock/update";
+            const DELETE_API = "/app/admin/product-stock/delete";
+            const INSERT_URL = "/app/admin/product-stock/insert";
+            const UPDATE_URL = "/app/admin/product-stock/update";
             
             // 字段 产品ID product_id
             layui.use(["jquery", "xmSelect", "popup"], function() {
@@ -122,15 +115,9 @@
 					},{
 						title: "id",
 						field: "id",
-                        width: 50,
-					},{
-						title: "入库单号",
-						field: "order_no",
-                        width: 180,
 					},{
 						title: "产品ID",
 						field: "product_id",
-                        width: 200,
 						templet: function (d) {
 							let field = "product_id";
 							if (typeof d[field] == "undefined") return "";
@@ -141,54 +128,14 @@
 							return util.escape(items.join(","));
 						}
 					},{
-						title: "入库数",
+						title: "产品库存",
 						field: "num",
-						sort: true,
-                        width: 100,
 					},{
-						title: "未使用数",
-						field: "unuse_num",
-                        width: 150,
-					},{
-						title: "单价",
-						field: "price",
-                        width: 80,
-					},{
-						title: "状态",
-						field: "state",
-                        width: 80,
-						templet: function (d) {
-							let field = "state";
-							if (typeof d[field] == "undefined") return "";
-							let items = [];
-							layui.each((d[field] + "").split(","), function (k , v) {
-								items.push(apiResults[field][v] || v);
-							});
-							return util.escape(items.join(","));
-						}
-					},{
-						title: "操作人",
-						field: "admin_id",
-						templet: function (d) {
-							let field = "admin_id";
-							if (typeof d[field] == "undefined") return "";
-							let items = [];
-							layui.each((d[field] + "").split(","), function (k , v) {
-								items.push(apiResults[field][v] || v);
-							});
-							return util.escape(items.join(","));
-						}
-					},{
-						title: "deleted_at",
-						field: "deleted_at",
-						hide: true,
-					},{
-						title: "添加时间",
+						title: "created_at",
 						field: "created_at",
 					},{
 						title: "updated_at",
 						field: "updated_at",
-                        hide: true,
 					},{
 						title: "操作",
 						toolbar: "#table-bar",
@@ -224,11 +171,8 @@
 				// 获取表格中下拉或树形组件数据
 				let apis = [];
 				apis.push(["product_id", "/app/admin/product/select?format=select"]);
-				apis.push(["admin_id", "/app/admin/admin/select?format=select"]);
 				let apiResults = {};
 				apiResults["product_id"] = [];
-				apiResults["state"] = {"1":"正常", "2":"撤销"};
-				apiResults["admin_id"] = [];
 				let count = apis.length;
 				layui.each(apis, function (k, item) {
 				    let [field, url] = item;
@@ -314,7 +258,7 @@
                         type: 2,
                         title: "新增",
                         shade: 0.1,
-                        area: [common.isModile()?"100%":"1000px", common.isModile()?"100%":"450px"],
+                        area: [common.isModile()?"100%":"500px", common.isModile()?"100%":"450px"],
                         content: INSERT_URL
                     });
                 }
@@ -326,7 +270,7 @@
                         type: 2,
                         title: "修改",
                         shade: 0.1,
-                        area: [common.isModile()?"100%":"1000px", common.isModile()?"100%":"450px"],
+                        area: [common.isModile()?"100%":"500px", common.isModile()?"100%":"450px"],
                         content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
                     });
                 }
