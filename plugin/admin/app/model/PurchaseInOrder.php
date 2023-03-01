@@ -13,8 +13,8 @@ use plugin\admin\app\model\Base;
  * @property string $price 单价
  * @property integer $state 状态：1 正常，2 撤销
  * @property integer $admin_id 操作人
- * @property string $deleted_at 
- * @property string $created_at 
+ * @property string $deleted_at
+ * @property string $created_at
  * @property string $updated_at
  */
 class PurchaseInOrder extends Base
@@ -40,6 +40,10 @@ class PurchaseInOrder extends Base
     protected static function booted()
     {
         static::created(function ($purchaseInOrder) {
+
+            $purchaseInOrder->unuse_num = $purchaseInOrder->num;
+            $purchaseInOrder->save();
+
             // 耗材库存记录
             $productStock = ProductStock::query()
                 ->where('product_id', $purchaseInOrder->product_id)
@@ -62,6 +66,6 @@ class PurchaseInOrder extends Base
 
         });
     }
-    
-    
+
+
 }
