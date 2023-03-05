@@ -74,4 +74,35 @@ class ProductController extends Crud
         return view('product/update');
     }
 
+    /**
+     * 查询
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function select(Request $request): Response
+    {
+        [$where, $format, $limit, $field, $order] = $this->selectInput($request);
+        $query = $this->doSelect($where, $field, $order);
+        return $this->doFormat($query, $format, $limit);
+    }
+
+
+    /**
+     * 格式化下拉列表
+     * @param $items
+     * @return Response
+     */
+    protected function formatSelect($items): Response
+    {
+        $formatted_items = [];
+        foreach ($items as $item) {
+            $formatted_items[] = [
+                'name' => $item->title ?? $item->name ?? $item->id,
+                'item_no' => $item->item_no,
+                'value' => $item->id
+            ];
+        }
+        return  $this->json(0, 'ok', $formatted_items);
+    }
 }

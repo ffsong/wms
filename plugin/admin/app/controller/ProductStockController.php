@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\controller;
 
+use plugin\admin\app\model\PurchaseInOrder;
 use support\Request;
 use support\Response;
 use plugin\admin\app\model\ProductStock;
@@ -63,6 +64,12 @@ class ProductStockController extends Crud
             return parent::update($request);
         }
         return view('product-stock/update');
+    }
+
+    // 批次库存
+    public function purchaseInOrder(Request $request): Response
+    {
+        return view('product-stock/purchase-in-order', ['product_id' => $request->get('product_id')]);
     }
 
 }

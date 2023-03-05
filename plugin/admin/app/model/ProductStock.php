@@ -28,6 +28,4 @@ class ProductStock extends Base
     protected $primaryKey = 'id';
 
     protected $fillable = ['product_id', 'num'];
-    
-    
 }

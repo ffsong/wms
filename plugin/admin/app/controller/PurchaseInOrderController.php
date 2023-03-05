@@ -2,6 +2,8 @@
 
 namespace plugin\admin\app\controller;
 
+use plugin\admin\app\model\ProductStock;
+use support\Db;
 use support\Request;
 use support\Response;
 use plugin\admin\app\model\PurchaseInOrder;
@@ -63,6 +65,35 @@ class PurchaseInOrderController extends Crud
             return parent::update($request);
         }
         return view('purchase-in-order/update');
+    }
+
+
+    // 报废
+    public function scrap(Request $request): Response
+    {
+        Db::beginTransaction();
+
+        try {
+            $purchaseInOrder = PurchaseInOrder::find($request->post('id'));
+            if ($purchaseInOrder['unuse_num'] > 0 && $purchaseInOrder['scrap_num'] === 0) {
+                $purchaseInOrder->scrap_num = $purchaseInOrder['unuse_num'];
+                $purchaseInOrder->unuse_num = 0;
+                $purchaseInOrder->scrap_admin_id = admin_id();
+                $purchaseInOrder->scraped_at = date("Y-m-d H:i:s");
+                $purchaseInOrder->save();
+
+                ProductStock::where('product_id', $purchaseInOrder['product_id'])
+                    ->decrement('num', $purchaseInOrder['unuse_num']);
+            }
+
+            DB::commit();
+        }catch (\Throwable $e){
+            DB::rollBack();
+
+            return $this->json(1, '操作失败', ['err_msg' => $e->getMessage()]);
+        }
+
+        return $this->json(0);
     }
 
 }
