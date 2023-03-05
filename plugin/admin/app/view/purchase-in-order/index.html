@@ -192,6 +192,7 @@
             }, {
                 title: "操作人",
                 field: "admin_id",
+                hide: true,
                 templet: function (d) {
                     let field = "admin_id";
                     if (typeof d[field] == "undefined") return "";
@@ -209,6 +210,9 @@
             }, {
                 title: "添加时间",
                 field: "created_at",
+            },  {
+                title: "过期时间",
+                field: "expired_at",
             }, {
                 title: "updated_at",
                 field: "updated_at",
