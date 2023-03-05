@@ -2,6 +2,7 @@
 
 namespace plugin\admin\app\model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use plugin\admin\app\model\Base;
 
 /**
@@ -19,6 +20,7 @@ use plugin\admin\app\model\Base;
  */
 class PurchaseInOrder extends Base
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
