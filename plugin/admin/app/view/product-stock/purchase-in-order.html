@@ -79,15 +79,15 @@
 					},{
 						title: "id",
 						field: "id",
-                        width: 50,
+                        width: 30,
 					},{
 						title: "入库单号",
 						field: "order_no",
-                        width: 180,
+                        width: 160,
 					},{
 						title: "产品名称",
 						field: "product_id",
-                        width: 200,
+                        width: 180,
 						templet: function (d) {
 							let field = "product_id";
 							if (typeof d[field] == "undefined") return "";
@@ -106,8 +106,16 @@
 						title: "未使用数",
 						field: "unuse_num",
                         sort: true,
-                        width: 150,
+                        width: 100,
 					},{
+                        title: "报废数",
+                        field: "scrap_num",
+                        width: 80,
+                    },{
+                        title: "报废时间",
+                        field: "scraped_at",
+                        width: 170,
+                    },{
 						title: "单价",
 						field: "price",
                         width: 80,
@@ -140,7 +148,7 @@
 						toolbar: "#table-bar",
 						align: "center",
 						fixed: "right",
-						width: 120,
+						width: 80,
 					}
 				];
 				
